@@ -21,7 +21,7 @@ documentation = "https://docs.rs/async-zmq"
 
 [dependencies]
 mio = "0.6"
-zmq = "0.10"
+zmq = { version = "0.10", path = "./rust-zmq" }
 futures = "0.3"
 slab = "0.4"
 thiserror = "1.0"
