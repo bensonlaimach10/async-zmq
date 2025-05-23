@@ -12,16 +12,35 @@ It seamlessly integrates with any async runtime (**tokio**, **async-std**, etc.)
 
 ---
 
-## Features
+## 🚀 Features
 
 * Support for all ZeroMQ socket types.
 * Stream and Sink interfaces for receiving and sending multipart messages.
 * Compatible with any async runtime.
-* Optional support for CURVE authentication with ZAP handlers.
+* CURVE encryption and ZAP authentication support.
 
 ---
 
-## Getting Started
+## 🧰 Installation
+
+Before using this crate, you must have the following system dependencies installed:
+
+```bash
+# On Debian/Ubuntu
+sudo apt install libzmq3-dev libsodium-dev
+```
+
+If these libraries are not available, CURVE authentication will not work, and you will see runtime errors like:
+
+```
+Error: CURVE security is not supported by the ZeroMQ library.
+```
+
+Make sure to build ZeroMQ with **libsodium** support if you compile it manually.
+
+---
+
+## 📦 Usage
 
 ### Basic Publisher Example
 
@@ -42,11 +61,16 @@ let sub = async_zmq::subscribe("inproc://example")?.with_context(&ctx).connect()
 
 ---
 
-## CURVE Authentication
+## 🔐 CURVE Authentication
 
-`async-zmq` supports CURVE encryption and authentication for secure communication. To use CURVE, both server and clients must have a key pair.
+To enable secure communication between nodes, `async-zmq` supports CURVE encryption and authentication.
 
-### Generating Keys
+### 🛠 Requirements
+
+* You **must** have `libsodium` and a ZeroMQ build that supports CURVE.
+* Install `libzmq3-dev` and `libsodium-dev` (see [Installation](#-installation)).
+
+### Generating Key Pair
 
 ```rust
 use async_zmq::CurveKeyPair;
@@ -56,7 +80,7 @@ println!("Public: {:?}", keys.public_key);
 println!("Secret: {:?}", keys.secret_key);
 ```
 
-### Setting CURVE Options for Server (Publisher)
+### Configuring a CURVE-Enabled Server (Publisher)
 
 ```rust
 let mut socket = async_zmq::publish("tcp://127.0.0.1:5555")?.bind()?;
@@ -69,11 +93,11 @@ socket.set_zap_domain("global")?;
 
 ---
 
-## ZAP Authentication Handler
+## 🔐 ZAP Authentication Handler
 
-ZeroMQ's ZAP (ZMQ Authentication Protocol) is used to handle authentication requests when using CURVE. You must implement a simple in-process handler.
+ZeroMQ’s ZAP protocol allows fine-grained authentication. A ZAP handler is required for CURVE to work.
 
-### Example ZAP Handler
+### ZAP Handler Example
 
 ```rust
 fn zap_auth_handler() -> async_zmq::Result<()> {
@@ -83,18 +107,15 @@ fn zap_auth_handler() -> async_zmq::Result<()> {
 
     loop {
         let request = zap.recv_multipart(0)?;
-        // Basic CURVE authentication validation
         if request.len() >= 7 && &request[5] == b"CURVE" {
             let client_key = String::from_utf8_lossy(&request[6]);
             println!("Client key: {}", client_key);
 
-            // Accept all clients for this example
             let response = vec![
                 "1.0", &request[1], "200", "OK", "user", "authenticated"
             ];
             zap.send_multipart(&response, 0)?;
         } else {
-            // Reject invalid requests
             let response = vec![
                 "1.0", &request[1], "400", "Invalid", "", ""
             ];
@@ -104,13 +125,11 @@ fn zap_auth_handler() -> async_zmq::Result<()> {
 }
 ```
 
-> **Note:** You must run the ZAP handler in a separate thread before establishing CURVE sockets.
+> Run the ZAP handler in a background thread before starting CURVE-enabled sockets.
 
 ---
 
-## Example: Secure Publisher
-
-Here’s a simplified version of a secure publisher using CURVE and ZAP:
+## 🔒 Full Secure Publisher Example
 
 ```rust
 #[async_std::main]
@@ -138,17 +157,17 @@ async fn main() -> async_zmq::Result<()> {
 
 ---
 
-## License
+## 📚 Documentation
 
-Licensed under [MIT](LICENSE).
-
----
-
-## Links
-
-* [ZeroMQ](https://zeromq.org)
+* [ZeroMQ Guide](https://zguide.zeromq.org)
 * [zmq crate](https://crates.io/crates/zmq)
 * [async-std](https://crates.io/crates/async-std)
 * [tokio](https://crates.io/crates/tokio)
 
-Let me know if you'd like this saved as a `README.md` file or further customized for `tokio` examples, client setup, or advanced ZAP handling.
+---
+
+## 🪪 License
+
+Licensed under [MIT](LICENSE).
+
+---
