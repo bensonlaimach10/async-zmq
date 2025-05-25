@@ -2,13 +2,44 @@
 
 An asynchronous Rust wrapper for ZeroMQ (libzmq) that provides a modern, ergonomic API with method chaining support.
 
-## Features
+## 🚀 Features
 
-- Asynchronous API built on top of async-std
-- Method chaining for socket configuration
-- Full support for ZeroMQ patterns (PUB-SUB, REQ-REP, etc.)
-- CURVE security protocol integration
-- Type-safe message handling
+* Support for all ZeroMQ socket types.
+* Stream and Sink interfaces for receiving and sending multipart messages.
+* Compatible with any async runtime.
+* CURVE encryption and ZAP authentication support.
+
+---
+
+## 🧰 Installation
+
+Before using this crate, you must have the following system dependencies installed:
+
+```bash
+# On Debian/Ubuntu
+sudo apt install libzmq3-dev libsodium-dev
+```
+
+If these libraries are not available, CURVE authentication will not work, and you will see runtime errors like:
+
+```
+Error: CURVE security is not supported by the ZeroMQ library.
+```
+
+Make sure to build ZeroMQ with **libsodium** support if you compile it manually.
+
+---
+
+## 📦 Usage
+
+### Basic Publisher Example
+
+```rust
+let mut socket = async_zmq::publish("tcp://127.0.0.1:5555")?.bind()?;
+socket.send(vec!["topic".into(), "message".into()].into()).await?;
+```
+
+### Shared Context Between Sockets
 
 ## Usage Examples
 
