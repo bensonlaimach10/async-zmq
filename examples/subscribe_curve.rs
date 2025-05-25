@@ -23,6 +23,9 @@ async fn main() -> Result<()> {
 
     println!("Setting CURVE options for subscriber...");
     
+
+
+    
     subscriber
         // This should be the actual publisher's public key - for a real application, you'd need to get this
         // from the publisher or configure it separately

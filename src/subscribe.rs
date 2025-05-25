@@ -73,13 +73,13 @@ impl Stream for Subscribe {
 
 impl Subscribe {
     /// Subscribe a topic to the socket
-    pub fn set_subscribe(&self, topic: &str) -> Result<&Self, SubscribeError> {
+    pub fn set_subscribe(&mut self, topic: &str) -> Result<&mut Self, SubscribeError> {
         self.as_raw_socket().set_subscribe(topic.as_bytes())?;
         Ok(self)
     }
 
     /// Remove a topic from the socket
-    pub fn set_unsubscribe(&self, topic: &str) -> Result<&Self, SubscribeError> {
+    pub fn set_unsubscribe(&mut self, topic: &str) -> Result<&mut Self, SubscribeError> {
         self.as_raw_socket().set_unsubscribe(topic.as_bytes())?;
         Ok(self)
     }
@@ -90,32 +90,45 @@ impl Subscribe {
     }
 
     /// Set the CURVE server flag on the socket.
-    pub fn set_curve_server(&self, enabled: bool) -> Result<&Self, zmq::Error> {
+    pub fn set_curve_server(&mut self, enabled: bool) -> Result<&mut Self, zmq::Error> {
         self.as_raw_socket().set_curve_server(enabled)?;
         Ok(self)
     }
 
     /// Set the CURVE public key on the socket.
-    pub fn set_curve_publickey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+    pub fn set_curve_publickey(&mut self, key: &[u8]) -> Result<&mut Self, zmq::Error> {
         self.as_raw_socket().set_curve_publickey(key)?;
         Ok(self)
     }
 
     /// Set the CURVE secret key on the socket.
-    pub fn set_curve_secretkey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+    pub fn set_curve_secretkey(&mut self, key: &[u8]) -> Result<&mut Self, zmq::Error> {
         self.as_raw_socket().set_curve_secretkey(key)?;
         Ok(self)
     }
 
     /// Set the CURVE server key on the socket.
-    pub fn set_curve_serverkey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+    pub fn set_curve_serverkey(&mut self, key: &[u8]) -> Result<&mut Self, zmq::Error> {
         self.as_raw_socket().set_curve_serverkey(key)?;
         Ok(self)
     }
 
     /// Set the ZAP domain for authentication.
-    pub fn set_zap_domain(&self, domain: &str) -> Result<&Self, zmq::Error> {
+    pub fn set_zap_domain(&mut self, domain: &str) -> Result<&mut Self, zmq::Error> {
         self.as_raw_socket().set_zap_domain(domain)?;
         Ok(self)
+    }
+
+    /// Set the receive high water mark for the socket.
+    /// The high water mark is a hard limit on the maximum number of outstanding messages
+    /// ØMQ shall queue in memory for any single peer that the specified socket is communicating with.
+    pub fn set_receive_hwm(&mut self, value: i32) -> Result<&mut Self, zmq::Error> {
+        self.as_raw_socket().set_rcvhwm(value)?;
+        Ok(self)
+    }
+
+    /// Get the receive high water mark for the socket.
+    pub fn get_receive_hwm(&self) -> Result<i32, zmq::Error> {
+        self.as_raw_socket().get_rcvhwm()
     }
 }

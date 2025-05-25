@@ -8,6 +8,7 @@ An asynchronous Rust wrapper for ZeroMQ (libzmq) that provides a modern, ergonom
 * Stream and Sink interfaces for receiving and sending multipart messages.
 * Compatible with any async runtime.
 * CURVE encryption and ZAP authentication support.
+* High Water Mark (HWM) control for message queuing.
 
 ---
 
@@ -95,6 +96,35 @@ The library supports all major ZeroMQ socket types with an ergonomic async API:
 - And more...
 
 Each socket type provides specific methods relevant to its pattern while maintaining a consistent API style with method chaining support.
+
+## Message Queue Control
+
+All sockets support High Water Mark (HWM) settings to control message queuing behavior:
+
+```rust
+// Publisher with send HWM
+let publisher = async_zmq::publish("tcp://127.0.0.1:5555")?
+    .bind()?
+    .set_send_hwm(1000)?;
+
+// Subscriber with receive HWM
+let subscriber = async_zmq::subscribe("tcp://127.0.0.1:5555")?
+    .connect()?
+    .set_receive_hwm(1000)?;
+
+// Request-Reply with both send and receive HWM
+let replier = async_zmq::reply("tcp://127.0.0.1:5555")?
+    .bind()?
+    .set_receive_hwm(1000)?
+    .set_send_hwm(1000)?;
+```
+
+The High Water Mark is a hard limit on the maximum number of outstanding messages ØMQ shall queue in memory for any single peer. When this limit is reached:
+- PUB sockets will drop messages for slow subscribers
+- SUB sockets will drop messages if they can't process them fast enough
+- REQ-REP sockets will block until space is available
+
+Default HWM is 1000 messages. Setting it to 0 means "no limit".
 
 ## Security
 
