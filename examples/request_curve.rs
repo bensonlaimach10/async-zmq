@@ -15,13 +15,13 @@ async fn main() -> Result<()> {
     println!("Requester socket created and connected");
 
     // Set CURVE options for the requester
-    println!("Setting CURVE options for requester...");
-    requester.set_curve_serverkey(&[0u8; 32])?; // We'll need to replace this with actual replier's public key
-    println!("Set CURVE server key");
-    requester.set_curve_publickey(&requester_pair.public_key)?;
-    println!("Set CURVE public key");
-    requester.set_curve_secretkey(&requester_pair.secret_key)?;
-    println!("Set CURVE secret key");
+    requester
+        // Set CURVE server flag
+        .set_curve_server(true)?
+        // Set CURVE secret key
+        .set_curve_secretkey(&requester_pair.secret_key)?
+        // Set CURVE public key"
+        .set_curve_publickey(&requester_pair.public_key)?;
 
     // Send a request
     println!("Sending request...");

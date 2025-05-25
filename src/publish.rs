@@ -53,28 +53,33 @@ impl<I: Iterator<Item = T> + Unpin, T: Into<Message>> Publish<I, T> {
     }
 
     /// Set the CURVE server flag on the socket.
-    pub fn set_curve_server(&self, enabled: bool) -> Result<(), zmq::Error> {
-        self.as_raw_socket().set_curve_server(enabled)
+    pub fn set_curve_server(&self, enabled: bool) -> Result<&Self, zmq::Error> {
+        self.as_raw_socket().set_curve_server(enabled)?;
+        Ok(self)
     }
 
     /// Set the CURVE public key on the socket.
-    pub fn set_curve_publickey(&self, key: &[u8]) -> Result<(), zmq::Error> {
-        self.as_raw_socket().set_curve_publickey(key)
+    pub fn set_curve_publickey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+        self.as_raw_socket().set_curve_publickey(key)?;
+        Ok(self)
     }
 
     /// Set the CURVE secret key on the socket.
-    pub fn set_curve_secretkey(&self, key: &[u8]) -> Result<(), zmq::Error> {
-        self.as_raw_socket().set_curve_secretkey(key)
+    pub fn set_curve_secretkey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+        self.as_raw_socket().set_curve_secretkey(key)?;
+        Ok(self)
     }
 
     /// Set the CURVE server key on the socket.
-    pub fn set_curve_serverkey(&self, key: &[u8]) -> Result<(), zmq::Error> {
-        self.as_raw_socket().set_curve_serverkey(key)
+    pub fn set_curve_serverkey(&self, key: &[u8]) -> Result<&Self, zmq::Error> {
+        self.as_raw_socket().set_curve_serverkey(key)?;
+        Ok(self)
     }
 
     /// Set the ZAP domain for authentication.
-    pub fn set_zap_domain(&self, domain: &str) -> Result<(), zmq::Error> {
-        self.as_raw_socket().set_zap_domain(domain)
+    pub fn set_zap_domain(&self, domain: &str) -> Result<&Self, zmq::Error> {
+        self.as_raw_socket().set_zap_domain(domain)?;
+        Ok(self)
     }
 }
 

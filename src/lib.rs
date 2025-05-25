@@ -20,7 +20,7 @@
 //! let xpub = async_zmq::xpublish("inproc://example")?.with_context(&context).bind();
 //! let sub = subscribe("inproc://example")?.with_context(&context).connect()?;
 //! ```
-//!
+//! 
 //! Since the use case of this crate is mostly for sending/recieving multipart message. So it provides [`Multipart`]
 //! which is a type alias for `Vec<Message>` when recieving message on type implemented with `Stream`, and [`MultipartIter`]
 //! which is a generic struct make any queue can turn into iterator and then send via type  implemented with `Sink`.
@@ -32,6 +32,7 @@
 //! [`async-std`]: https://crates.io/crates/async-std
 //! [`Multipart`]: type.Multipart.html
 //! [`MultipartIter`]: struct.MultipartIter.html
+
 
 #![deny(unused_extern_crates, unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms, unreachable_pub)]
@@ -47,9 +48,9 @@ pub mod request;
 pub mod router;
 pub mod stream;
 pub mod subscribe;
-pub mod curve;
 pub mod xpublish;
 pub mod xsubscribe;
+pub mod curve;
 
 mod reactor;
 mod socket;
@@ -67,9 +68,9 @@ pub use crate::router::{router, Router};
 pub use crate::socket::{Multipart, MultipartIter, SocketBuilder};
 pub use crate::stream::{stream, ZmqStream};
 pub use crate::subscribe::{subscribe, Subscribe};
-pub use crate::curve::CurveKeyPair;
 pub use crate::xpublish::{xpublish, XPublish};
 pub use crate::xsubscribe::{xsubscribe, XSubscribe};
+pub use crate::curve::CurveKeyPair;
 pub use futures::sink::{Sink, SinkExt};
 pub use futures::stream::{Stream, StreamExt};
 pub use zmq::{self, Context, Error, Message, Result};

@@ -16,13 +16,14 @@ async fn main() -> Result<()> {
 
     // Set CURVE options for the replier
     println!("Setting CURVE options for replier...");
-    replier.set_curve_server(true)?;
-    println!("Set CURVE server flag");
-    replier.set_curve_secretkey(&replier_pair.secret_key)?;
-    println!("Set CURVE secret key");
-    replier.set_curve_publickey(&replier_pair.public_key)?;
-    println!("Set CURVE public key");
-
+    replier
+        // Set CURVE server flag
+        .set_curve_server(true)?
+        // Set CURVE secret key
+        .set_curve_secretkey(&replier_pair.secret_key)?
+        // Set CURVE public key"
+        .set_curve_publickey(&replier_pair.public_key)?;
+        
     // Receive the request and send a reply
     println!("Waiting for request...");
     let msg = replier.recv().await?;
